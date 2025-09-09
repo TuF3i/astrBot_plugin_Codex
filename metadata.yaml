@@ -1,5 +1,5 @@
-name: AstrBot_Codex # 这是你的插件的唯一识别名。
-desc: 这是一个基于Docker的Linux命令执行插件。 # 插件简短描述
-version: v1.0.0 # 插件版本号。格式：v1.1.1 或者 v1.1
-author: TuF3i # 作者
-repo: https://github.com/TuF3i/astrBot_plugin_Codex.git # 插件的仓库地址
+name: Codex
+desc: AstrBot_Codex 是一个基于 Docker 的 Linux 命令执行插件，专为 AstrBot 开发，能够安全地在隔离的 Docker 容器中执行多种编程语言的代码并返回结果。
+version: v1.0.0
+author: TuF3i
+repo: https://github.com/TuF3i/astrBot_plugin_Codex
