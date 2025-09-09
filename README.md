@@ -1,9 +1,13 @@
 # AstrBot_Codex
 
-<div align="center">
+<div>
   <img src="https://img.shields.io/badge/version-v1.0.0-blue.svg" alt="版本号">
   <img src="https://img.shields.io/badge/author-TuF3i-green.svg" alt="作者">
   <img src="https://img.shields.io/badge/license-MIT-yellow.svg" alt="许可证">
+</div>
+
+<div align="center">
+  <img src="images/help.png" alt="help示例" width="1100">
 </div>
 
 ## 项目介绍
