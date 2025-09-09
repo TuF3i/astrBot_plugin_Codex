@@ -13,8 +13,8 @@ class MyPlugin(Star):
 
     async def initialize(self):
         self.dockerEnv = dockerSupport(useXuanYuanMirror=True)  #使用镜像加速
-        self.dockerEnv.init_docker_env()
-        self.dockerEnv.check_images()
+        await self.dockerEnv.init_docker_env()
+        await self.dockerEnv.check_images()
 
         self.exec = Commandexec(self.dockerEnv.client, self.dockerEnv.imageName)
 
@@ -35,28 +35,28 @@ class MyPlugin(Star):
     async def shell_lan(self, event: AstrMessageEvent):
         """执行Shell代码"""
         logger.info(f"raw_message:{event.message_str}") # 平台下发的原始消息在这里
-        res = self.exec.code_exec_shell(event.message_str)
+        res = await self.exec.code_exec_shell(event.message_str)
         yield event.plain_result(res)
     
     @code.command("python")
     async def python_lan(self, event: AstrMessageEvent):
         """执行Python代码"""
         logger.info(f"raw_message:{event.message_str}")
-        res = self.exec.code_exec_python(event.message_str)
+        res = await self.exec.code_exec_python(event.message_str)
         yield event.plain_result(res)
 
     @code.command("java")
     async def java_lan(self, event: AstrMessageEvent):
         """执行Java代码"""
         logger.info(f"raw_message:{event.message_str}")
-        res = self.exec.code_exec_java(event.message_str)
+        res = await self.exec.code_exec_java(event.message_str)
         yield event.plain_result(res)
 
     @code.command("C")
     async def C_lan(self, event: AstrMessageEvent):
         """执行C代码"""
         logger.info(f"raw_message:{event.message_str}")
-        res = self.exec.code_exec_C(event.message_str)
+        res = await self.exec.code_exec_C(event.message_str)
         yield event.plain_result(res)
 
     async def terminate(self):

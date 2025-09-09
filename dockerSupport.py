@@ -1,54 +1,55 @@
-import time
+import asyncio
 
 from astrbot.api import logger
 
-import docker
-from docker.errors import APIError, ImageNotFound
+import aiodocker
 
-def pull_docker_image(client, image_name, auth_config):
+async def pull_docker_image(client, image_name):
     try:
-        # 拉取镜像
         logger.info(f"正在拉取镜像: {image_name}")
-        image = client.images.pull(image_name, auth_config=auth_config)
-
-        logger.info(f"镜像拉取成功: {image.tags}")
-        return image
-
-    except APIError as e:
-        logger.info(f"Docker API错误: {e}")
-        return None
-    except Exception as e:
-        logger.info(f"拉取镜像时发生错误: {e}")
-        return None
-
-def check_image_exists_locally(client, image_name):
-    try:
-        client.images.get(image_name)
+        await client.images.pull(image_name)
+        logger.info(f"镜像拉取成功: {image_name}")
         return True
-    except ImageNotFound:
+    except Exception as e:
+        logger.info(f"拉取镜像时发生错误: {e},请手动拉取镜像,详细信息请阅读README.md")
+        return False
+
+async def check_image_exists_locally(client, image_name):
+    try:
+        images = await client.images.list()
+        for image in images:
+            if image_name in image['RepoTags'] or f"{image_name}:latest" in image['RepoTags']:
+                return True
+        return False
+    except Exception as e:
+        logger.info(f"检查镜像时发生错误: {e}")
         return False
 
 class dockerSupport():
-    def __init__(self,useXuanYuanMirror):
+    def __init__(self, useXuanYuanMirror):
         if useXuanYuanMirror:
             self.imageName = "docker.xuanyuan.me/tuf3i/code_exec"  # 使用镜像加速
         else:
             self.imageName = "tuf3i/code_exec"  #不使用镜像加速
-        self.auth_config = None
-        self.docker_url = "unix:///var/run/docker.sock"
+        self.client = None
 
-    def init_docker_env(self):
+    async def init_docker_env(self):
         try:
-            self.client = docker.DockerClient(base_url=self.docker_url)
-            logger.info(f"成功连接到 Docker 引擎 (API 版本: {self.client.api.version()['ApiVersion']})")
-            time.sleep(1)
-        except docker.errors.DockerException as e:
+            self.client = aiodocker.Docker()
+            version = await self.client.version()
+            logger.info(f"成功连接到 Docker 引擎 (API 版本: {version['ApiVersion']})"
+            )
+        except Exception as e:
             logger.info(f"连接失败: {str(e)}")
 
-    def check_images(self):
+    async def check_images(self):
         logger.info("开始检测镜像信息")
-        if check_image_exists_locally(self.client ,self.imageName):
+        if self.client is None:
+            logger.info("Docker客户端未初始化，跳过镜像检查")
+            return
+        
+        if await check_image_exists_locally(self.client, self.imageName):
             logger.info(f"镜像<{self.imageName}>存在")
         else:
             logger.info(f"镜像<{self.imageName}>不存在，开始拉取镜像")
-            pull_docker_image(self.client, self.imageName, self.auth_config)
+            await pull_docker_image(self.client, self.imageName)
