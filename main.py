@@ -12,7 +12,7 @@ class MyPlugin(Star):
         super().__init__(context)
 
     async def initialize(self):
-        self.dockerEnv = dockerSupport(useXuanYuanMirror=True)  #使用镜像加速
+        self.dockerEnv = dockerSupport(useXuanYuanMirror=False)  #使用镜像加速
         await self.dockerEnv.init_docker_env()
         await self.dockerEnv.check_images()
 
