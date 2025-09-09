@@ -59,13 +59,12 @@ Github: https://github.com/TuF3i/AstrBot_Codex
             # 获取容器日志
             logs = await container.log(stdout=True, stderr=True)
             log_line = ''.join(logs)
+            #log_line = logs[0]
             
             await container.delete(force=True)  # 删除容器
-            try:
-                return base64.b64decode(log_line)
-            except Exception as e:
-                return f"执行代码时发生错误:: {e}"
-             
+
+            return base64.b64decode(log_line)
+
         except Exception as e:
             logger.info(f"执行代码时发生错误: {e}")
             return f"执行错误: {str(e)}"
