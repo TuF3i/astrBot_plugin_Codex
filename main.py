@@ -6,13 +6,13 @@ import astrbot.api.message_components as Comp
 from .exec import Commandexec
 from .dockerSupport import dockerSupport
 
-@register("AstrBot_pluggin_Codex", "TuF3i", "这是一个基于Docker的Linux命令执行插件。", "1.0.0")
+@register("AstrBot_pluggin_Codex", "TuF3i", "这是一个基于Docker的Linux命令执行插件。", "1.1.0")
 class MyPlugin(Star):
     def __init__(self, context: Context):
         super().__init__(context)
 
     async def initialize(self):
-        self.dockerEnv = dockerSupport(useXuanYuanMirror=False)  #使用镜像加速
+        self.dockerEnv = dockerSupport(useXuanYuanMirror=True)  #使用镜像加速
         await self.dockerEnv.init_docker_env()
         await self.dockerEnv.check_images()
 
@@ -56,7 +56,7 @@ class MyPlugin(Star):
     async def C_lan(self, event: AstrMessageEvent):
         """执行C代码"""
         logger.info(f"raw_message:{event.message_str}")
-        res = await self.exec.code_exec_C(event.message_str)
+        res = await self.exec.code_exec_c(event.message_str)
         yield event.plain_result(res)
 
     async def terminate(self):
