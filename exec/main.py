@@ -1,4 +1,5 @@
-import os
+import subprocess
+import io
 import sys
 import base64
 
@@ -24,7 +25,7 @@ def execute_code(language, code):
     }
     
     if language not in language_config:
-        return base64.b64encode(f"不支持的语言: {language}".encode('utf-8')).decode('utf-8')
+        return base64.b64encode(f"Unsupport Language: {language}".encode('utf-8')).decode('utf-8')
     
     config = language_config[language]
     
@@ -32,7 +33,17 @@ def execute_code(language, code):
         with open(f'cmd.{config["extension"]}', 'w', encoding='utf-8') as file:
             file.write(code)
         
-        res = os.popen(config["command"]).read()
+        CMD = config["command"]
+        proc = subprocess.Popen(CMD, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, bufsize=-1)
+        proc.wait()
+        stream_stdout = io.TextIOWrapper(proc.stdout, encoding='utf-8')
+        stream_stderr = io.TextIOWrapper(proc.stderr, encoding='utf-8')
+      
+        str_stdout = str(stream_stdout.read())
+        str_stderr = str(stream_stderr.read())
+
+        res = "Stdout:\n" + str_stdout + "\n" +"Stderr:\n" + str_stderr
+        #res = os.popen(config["command"]).read()
         
         string_bytes = res.encode('utf-8')
         res_raw = base64.b64encode(string_bytes)
@@ -40,13 +51,13 @@ def execute_code(language, code):
         return res_raw.decode('utf-8')
         
     except Exception as e:
-        error_msg = f"执行代码时出错: {str(e)}"
+        error_msg = f"Runtime Error: {str(e)}"
         return base64.b64encode(error_msg.encode('utf-8')).decode('utf-8')
 
 
 def main():
     if len(sys.argv) != 3:
-        error_msg = "用法: python main.py <语言> <base64编码的代码>"
+        error_msg = "Useage: python main.py <language> <base64>"
         print(base64.b64encode(error_msg.encode('utf-8')).decode('utf-8'), end='')
         return
     
@@ -61,13 +72,13 @@ def main():
         print(result, end='')
         
     except base64.binascii.Error:
-        error_msg = "错误: Base64编码无效"
+        error_msg = "Error: Base64 code unsopport"
         print(base64.b64encode(error_msg.encode('utf-8')).decode('utf-8'), end='')
     except UnicodeDecodeError:
-        error_msg = "错误: 无法将代码解码为UTF-8格式"
+        error_msg = "Error: Cant translate code into UTF-8"
         print(base64.b64encode(error_msg.encode('utf-8')).decode('utf-8'), end='')
     except Exception as e:
-        error_msg = f"错误: {str(e)}"
+        error_msg = f"Error: {str(e)}"
         print(base64.b64encode(error_msg.encode('utf-8')).decode('utf-8'), end='')
 
 

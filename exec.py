@@ -61,8 +61,11 @@ Github: https://github.com/TuF3i/AstrBot_Codex
             log_line = ''.join(logs)
             
             await container.delete(force=True)  # 删除容器
-            
-            return base64.b64decode(log_line)
+            try:
+                return base64.b64decode(log_line)
+            except Exception as e:
+                return f"执行代码时发生错误:: {e}"
+             
         except Exception as e:
             logger.info(f"执行代码时发生错误: {e}")
             return f"执行错误: {str(e)}"
