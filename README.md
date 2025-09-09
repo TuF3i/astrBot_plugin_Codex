@@ -6,10 +6,6 @@
   <img src="https://img.shields.io/badge/license-MIT-yellow.svg" alt="许可证">
 </div>
 
-<div align="center">
-  <img src="images/help.png" alt="help示例" width="1100">
-</div>
-
 ## 项目介绍
 
 AstrBot_Codex 是一个基于 Docker 的 Linux 命令执行插件，专为 AstrBot 开发，能够安全地在隔离的 Docker 容器中执行多种编程语言的代码并返回结果。
@@ -115,6 +111,10 @@ int main() {
 ```
 /code help
 ```
+
+<div align="center">
+  <img src="images/help.png" alt="help示例" width="1100">
+</div>
 
 ## 实现原理
 
