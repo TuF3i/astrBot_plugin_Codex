@@ -6,37 +6,38 @@ class Commandexec():
     def __init__(self, client, image_name):
         self.image_name = image_name
         self.client = client
-        self.help_doc = '''
-        帮助文档：
-        ------
-        Author: TuF3i
-        Version: 1.0.0-dev
-        Github: https://github.com/TuF3i/AstrBot_Codex
-        ------
-        1.代码执行：
-        /code shell
-        <cmd>
+        self.help_doc = r'''
+帮助文档：
+------
+Author: TuF3i
+Version: 1.0.0-dev
+Github: https://github.com/TuF3i/AstrBot_Codex
+------
+1.代码执行：
+/code shell
+<cmd>
 
-        /code python
-        <cmd>
+/code python
+<cmd>
 
-        /code java
-        <cmd>
+/code java
+<cmd>
 
-        /code C
-        <cmd>
+/code C
+<cmd>
 
-        2.命令黑名单：
-        /code add_acl <cmd>
-        #添加黑名单命令，此命令将不会被执行
+2.命令黑名单：
+/code add_acl <cmd>
+#添加黑名单命令，此命令将不会被执行
 
-        /code del_acl <cmd>
-        #移除黑名单命令，此命令将会被执行
+/code del_acl <cmd>
+#移除黑名单命令，此命令将会被执行
 
-        注意：
-        1.不要使用对系统有害的命令
-        2.程序会从第一个\n处开始分割代码，所以在/code <language>后一定要先回车再输命令
-        '''
+注意：
+1.不要使用对系统有害的命令
+2.程序会从第一个\n处开始分割代码，所以在/code <language>后一定要先回车再输命令
+3.目前支持：Shell, Python, Java, C 四种语言
+'''
 
     def code_exec_shell(self,cmd_raw):
         cmd = cmd_raw.split("\n", 1)
